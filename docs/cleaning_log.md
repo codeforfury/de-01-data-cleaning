@@ -61,3 +61,34 @@
 **Decision:** Dropped these 14 rows.
 
 **Rationale:** No genuine short/mid-term rental requires 500+ night minimum stays. With no reliable way to determine a correct value, and given the negligible row loss (0.03%), dropping is the safer choice over imputing a guessed value.
+
+---
+
+### 6. Text Standardization Check
+**Observation:** Checked `neighbourhood_group` and `room_type` for inconsistent casing/spacing via `.unique()`.
+
+**Decision:** No action needed.
+
+**Rationale:** Both columns contain clean, consistent categorical values with no formatting issues (5 boroughs, 3 room types, no duplicates or casing variants).
+
+---
+
+### 7. `neighbourhood` Column Check
+**Observation:** 221 unique neighbourhood values checked via `.nunique()` and `.unique()`.
+
+**Decision:** No action needed.
+
+**Rationale:** All values are consistently formatted (proper casing, no whitespace issues, no duplicate variants). Note: "Bay Terrace" and "Bay Terrace, Staten Island" are two distinct legitimate NYC locations, not a data error.
+
+---
+
+## Summary
+- Started with 48,895 rows, 16 columns
+- Handled missing values in 4 columns (last_review, reviews_per_month, name, host_name)
+- Converted last_review to datetime
+- Removed 11 rows with price = 0
+- Removed 14 rows with unrealistic minimum_nights (>365)
+- No duplicate rows found
+- Verified categorical columns (neighbourhood_group, room_type, neighbourhood) were already clean
+- Final dataset: 48,870 rows, 16 columns
+- Output saved to data/processed/AB_NYC_2019_cleaned.csv
