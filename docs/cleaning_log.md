@@ -32,3 +32,32 @@
 **Rationale:** Affected percentage is negligible, but dropping would still discard otherwise complete, valid rows. `name` and `host_name` are identifier/text fields not used in numeric analysis, so a placeholder has no downstream statistical impact.
 
 ---
+
+### 3. Duplicate Rows
+**Observation:** Checked via `df.duplicated().sum()` → returned 0.
+
+**Decision:** No action needed.
+
+**Rationale:** Dataset contains no exact duplicate rows across all columns.
+
+---
+
+### 4. `price` = 0 — Outliers
+**Observation:** 11 rows (0.02%) had price = 0.
+
+**Investigation:** Inspected affected rows — all had legitimate neighbourhoods, room types, and active review history (some with dozens of reviews and recent last_review dates). Not corrupted or test entries.
+
+**Decision:** Dropped these 11 rows.
+
+**Rationale:** A price of 0 is factually invalid (Airbnb listings cannot be free), and with no reliable basis to impute a correct price, dropping is safer than introducing a guessed value into price-based analysis. Negligible row loss (0.02%) makes this a low-risk decision.
+
+---
+
+### 5. `minimum_nights` — Extreme Outliers
+**Observation:** 14 rows (0.03%) had minimum_nights > 365 (up to 1,250 nights).
+
+**Investigation:** Cross-checked against availability_365 to test whether hosts were intentionally blocking bookings (a known Airbnb pattern). Found most affected listings had high availability_365 (300+ days), contradicting the "intentional delisting" theory — this pattern instead looks like unrealistic/erroneous minimum stay values rather than deliberate host behavior.
+
+**Decision:** Dropped these 14 rows.
+
+**Rationale:** No genuine short/mid-term rental requires 500+ night minimum stays. With no reliable way to determine a correct value, and given the negligible row loss (0.03%), dropping is the safer choice over imputing a guessed value.
